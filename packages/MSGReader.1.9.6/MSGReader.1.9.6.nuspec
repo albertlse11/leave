@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>MSGReader</id>
+    <version>1.9.6</version>
+    <title>Read Outlook MSG and EML (Mime) files without Outlook</title>
+    <authors>Kees van Spelde</authors>
+    <owners>Kees van Spelde</owners>
+    <licenseUrl>http://www.codeproject.com/info/cpol10.aspx</licenseUrl>
+    <projectUrl>https://github.com/Sicos1977/MSGReader</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Read Outlook MSG and EML files without using Outlook.
+
+The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
+
+The EML reader supports MIME 1.0 encoded files</description>
+    <releaseNotes>There are 4 languages (nl-NL, de-DE, fr-FR and en-US (default) available when you use the Reader class. You can set the language by using the SetCulture method. For example SetCulture("nl-NL") to set it to Dutch. When there isn't a translated resource available the en-US resource is used. To add a translation download the code and copy the LanguageConsts.resx file, rename the file to LanguageConsts.[culture].resx (e.g. LanguageConsts.fr.resx for French). Afterwards open the resource file and translate it. Then recompile the source and use the SetCulture method in the reader class to set the UI culture.</releaseNotes>
+    <copyright>Kees van Spelde</copyright>
+    <tags>Outlook MSG Signed EML Contact Appointment Task</tags>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.0" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

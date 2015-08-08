@@ -1,0 +1,53 @@
+﻿@model LeaveApplication.Models.Leave
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Leave</h4>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.LeaveDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LeaveDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EmployeeID)
+        </dt>
+
+        <dd>
+            @*@Html.DisplayFor(model => model.EmployeeID)*@
+            @Html.Raw(ViewBag.EmployeeName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LTypeID)
+        </dt>
+
+        <dd>
+            @*@Html.DisplayFor(model => model.LTypeID)*@
+            @Html.Raw(ViewBag.LTypeName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReasonID)            
+        </dt>
+
+        <dd>
+            @*@Html.DisplayFor(model => model.ReasonID)*@
+            @Html.Raw(ViewBag.ReasonDesc)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,99 @@
+﻿@model LeaveApplication.Models.Leave
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Leave</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+
+        @if (TempData["UploadedFile"] != null)
+        {
+            <div class="form-group">
+                @Html.Label("Information extracted from Email:", new { @class = "control-label col-md-3" })            
+            </div>            
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayName("From:")
+                </dt>
+                <dd>
+                    @Html.Label("From", (string)@ViewBag.From)                    
+                </dd>
+
+                <dt>
+                    @Html.DisplayName("Sent On:")
+                </dt>
+                <dd>
+                    @Html.Label("SentOn", (string)@ViewBag.SentOn)
+                </dd>
+
+                <dt>
+                    @Html.DisplayName("Subject:")
+                </dt>
+                <dd>
+                    @Html.Label("Subject", (string)@ViewBag.Subject)
+                </dd>
+            </dl>
+            <hr />
+        }
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.LeaveDate, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.LeaveDate)*@
+                @Html.TextBoxFor(model => model.LeaveDate, "{0:MM/dd/yyyy}", new { @class = "form-control datefield" })
+                @Html.ValidationMessageFor(model => model.LeaveDate)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EmployeeID, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.EmployeeID)*@
+                @Html.DropDownList("EmployeeID", (SelectList)ViewBag.Employees, "-- Select One --")
+                @Html.ValidationMessageFor(model => model.EmployeeID)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.LTypeID, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.LTypeID)*@
+                @Html.DropDownList("LTypeID", (SelectList)ViewBag.LTypes, "-- Select One --")
+                @Html.ValidationMessageFor(model => model.LTypeID)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ReasonID, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.ReasonID)*@
+                @Html.DropDownList("ReasonID", (SelectList)ViewBag.Reasons, "-- Select One --")
+                @Html.ValidationMessageFor(model => model.ReasonID)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
