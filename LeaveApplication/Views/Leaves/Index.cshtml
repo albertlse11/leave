@@ -7,7 +7,7 @@
 
 <h2>Index</h2>
 
-@if (Request.IsAuthenticated)
+@if (Request.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("CanCreate") || User.IsInRole("CanEdit")))
 {
     <p>@Html.ActionLink("Create New", "Create") | @Html.ActionLink("Upload", "Upload")</p>
 }    
@@ -49,12 +49,15 @@
             @*@Html.DisplayFor(modelItem => item.ReasonID)*@
             @Html.DisplayFor(modelItem => item.ReasonDesc)
         </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Copy", "Create", new { id = item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
+        @if (Request.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("CanEdit")))
+        {
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                @Html.ActionLink("Copy", "Create", new { id = item.ID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+            </td>
+        }        
     </tr>
 }
 

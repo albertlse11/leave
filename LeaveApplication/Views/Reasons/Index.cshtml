@@ -22,11 +22,14 @@
         <td>
             @Html.DisplayFor(modelItem => item.Desc)
         </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
+        @if (Request.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("CanEdit")))
+        {
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+                @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+            </td>
+        }
     </tr>
 }
 
