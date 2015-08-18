@@ -11,12 +11,12 @@ using LeaveApplication.Context;
 
 namespace LeaveApplication.Controllers
 {
-    [Authorize(Roles = "Admin")]
     public class ReasonsController : Controller
     {
         private LeaveAppDbContext db = new LeaveAppDbContext();
 
         // GET: /Reasons/
+        [Authorize(Roles = "Admin,CanCreate,CanEdit")]
         public ActionResult Index()
         {
             //return View(db.Reasons.ToList());
@@ -29,6 +29,7 @@ namespace LeaveApplication.Controllers
         }
 
         // GET: /Reasons/Details/5
+        [Authorize(Roles = "Admin,CanEdit")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -44,6 +45,7 @@ namespace LeaveApplication.Controllers
         }
 
         // GET: /Reasons/Create
+        [Authorize(Roles = "Admin,CanCreate,CanEdit")]
         public ActionResult Create()
         {
             return View();
@@ -54,6 +56,7 @@ namespace LeaveApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,CanCreate,CanEdit")]
         public ActionResult Create([Bind(Include="ID,Desc")] Reason reason)
         {
             if (ModelState.IsValid)
@@ -67,6 +70,7 @@ namespace LeaveApplication.Controllers
         }
 
         // GET: /Reasons/Edit/5
+        [Authorize(Roles = "Admin,CanEdit")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -86,6 +90,7 @@ namespace LeaveApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,CanEdit")]
         public ActionResult Edit([Bind(Include = "ID,Desc,Deleted,UserCreated,DateCreated,UserModified,DateModified")] Reason reason)
         {
             if (ModelState.IsValid)
@@ -98,6 +103,7 @@ namespace LeaveApplication.Controllers
         }
 
         // GET: /Reasons/Delete/5
+        [Authorize(Roles = "Admin,CanEdit")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -115,6 +121,7 @@ namespace LeaveApplication.Controllers
         // POST: /Reasons/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,CanEdit")]
         public ActionResult DeleteConfirmed(int id)
         {
             Reason reason = db.Reasons.Find(id);
@@ -124,7 +131,6 @@ namespace LeaveApplication.Controllers
             return RedirectToAction("Index");
         }
         
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)

@@ -39,7 +39,7 @@ namespace LeaveApplication.Controllers
             return View(query.ToList());
         }
 
-        [Authorize(Roles = "Admin,CanCreate,CanEdit")]
+        [Authorize(Roles = "Admin,CanEdit")]
         // GET: /Leaves/Details/5
         public ActionResult Details(int? id)
         {
@@ -214,7 +214,13 @@ namespace LeaveApplication.Controllers
         [Authorize(Roles = "Admin,CanCreate,CanEdit")]
         public ActionResult Upload(HttpPostedFileBase UploadFile)
         {
+            if (!Directory.Exists(Server.MapPath("~/Temp/")))
+            {
+                Directory.CreateDirectory(Server.MapPath("~/Temp/"));
+            }
+
             string path = Server.MapPath("~/Temp/" + UploadFile.FileName.Substring(UploadFile.FileName.LastIndexOf('\\') + 1));
+            
             UploadFile.SaveAs(path);
 
             TempData["UploadedFile"] = path;

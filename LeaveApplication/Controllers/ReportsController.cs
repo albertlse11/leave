@@ -61,7 +61,7 @@ namespace LeaveApplication.Controllers
             
             var data = db.Database.SqlQuery<ReportResult>("SpGenReport @startdate, @enddate, @typename, @email",
                                                 new SqlParameter("@startdate", report.StartDate),
-                                                new SqlParameter("@enddate", report.EndDate),
+                                                new SqlParameter("@enddate", report.EndDate.AddDays(1)),
                                                 new SqlParameter("@typename", LTypeName),
                                                 new SqlParameter("@email", "%"));
 
