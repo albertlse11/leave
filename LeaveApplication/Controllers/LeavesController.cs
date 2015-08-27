@@ -75,6 +75,8 @@ namespace LeaveApplication.Controllers
             
             //return View();
 
+            Leave leave = new Leave();
+
             //Create brand new record
             if (id == null)
             {
@@ -83,15 +85,16 @@ namespace LeaveApplication.Controllers
                     return View(ExtractMsgFile(TempData["UploadedFile"].ToString()));
                 }
 
+                leave.LeaveDate = DateTime.Now;
                 LoadDdlEmployees();
                 LoadDdlLTypes();
                 LoadDdlReasons();
 
-                return View();
+                return View(leave);
             }
 
             //Copy a record and populate on Create View
-            Leave leave = db.Leaves.Find(id);
+            leave = db.Leaves.Find(id);
             if (leave == null)
             {
                 return HttpNotFound();

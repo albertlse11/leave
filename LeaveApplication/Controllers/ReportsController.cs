@@ -123,6 +123,7 @@ namespace LeaveApplication.Controllers
             List<int> LvPLCounts = new List<int>();
             List<int> LvCLCounts = new List<int>();
             List<int> LvOOOCounts = new List<int>();
+            List<int> LvHLCounts = new List<int>();
             
             foreach (var item in report.ReportResults)
             {
@@ -159,6 +160,9 @@ namespace LeaveApplication.Controllers
                         break;
                     case "Out of Office":
                         LvOOOCounts.Add(item.NoOfDays);
+                        break;
+                    case "Hospitalization Leave":
+                        LvHLCounts.Add(item.NoOfDays);
                         break;
                 }
             }
@@ -243,6 +247,13 @@ namespace LeaveApplication.Controllers
                 chart.AddSeries(name: "Out of Office",
                             xValue: EmpNames,
                             yValues: LvOOOCounts);
+            }
+
+            if (LvHLCounts.Sum() > 0)
+            {
+                chart.AddSeries(name: "Hospitalization Leave",
+                            xValue: EmpNames,
+                            yValues: LvHLCounts);
             }
 
             return File(chart.ToWebImage().GetBytes(), "image/jpeg", "chart.jpg");
