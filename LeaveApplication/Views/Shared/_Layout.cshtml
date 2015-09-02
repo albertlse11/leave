@@ -45,6 +45,7 @@
         </div>
     </div>
     <div class="container body-content">
+        <marquee behavior="scroll" direction="left">@{ Html.RenderAction("Index", "Stats"); }</marquee>
         @RenderBody()
         <hr />
         <footer>
