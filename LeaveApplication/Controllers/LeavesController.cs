@@ -233,7 +233,7 @@ namespace LeaveApplication.Controllers
 
         private void LoadDdlEmployees(int SelectedValue = 0)
         {
-            var query = db.Employees.OrderBy(c => c.LastName).Select(c => new { c.ID, Name = c.LastName + ", " + c.FirstName });
+            var query = db.Employees.Where(c => c.Deleted == false).OrderBy(c => c.LastName).Select(c => new { c.ID, Name = c.LastName + ", " + c.FirstName });
             ViewBag.Employees = new SelectList(query.AsEnumerable(), "ID", "Name", SelectedValue);
         }
 
