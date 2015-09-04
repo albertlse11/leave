@@ -25,12 +25,8 @@
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>*@
 
-                    <li>@Html.ActionLink("Report", "Report", "Reports")</li>
-
-                    @if (Request.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("CanCreate") || User.IsInRole("CanEdit")))
-                    {
-                        <li>@Html.ActionLink("Reason", "Index", "Reasons")</li>
-                    }
+                    <li>@Html.ActionLink("Reason", "Index", "Reasons")</li>
+                    <li>@Html.ActionLink("Report", "Report", "Reports")</li>                    
 
                     @if (Request.IsAuthenticated && User.IsInRole("Admin"))
                     {
