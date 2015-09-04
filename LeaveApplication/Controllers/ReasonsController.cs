@@ -16,7 +16,7 @@ namespace LeaveApplication.Controllers
         private LeaveAppDbContext db = new LeaveAppDbContext();
 
         // GET: /Reasons/
-        [Authorize(Roles = "Admin,CanCreate,CanEdit")]
+        //[Authorize(Roles = "Admin,CanCreate,CanEdit")]
         public ActionResult Index()
         {
             //return View(db.Reasons.ToList());
