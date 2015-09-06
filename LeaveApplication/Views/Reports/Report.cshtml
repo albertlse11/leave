@@ -6,7 +6,6 @@
 
 <h2>Report</h2>
 
-
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -17,32 +16,34 @@
         @Html.ValidationSummary(true)
         
         <div class="form-group">
-            @Html.LabelFor(model => model.StartDate, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Criteria.StartDate, new { @class = "control-label col-md-2" })
             @*@Html.Label("Start Date:", new { @class = "control-label col-md-2" })*@
             <div class="col-md-10">
                 @*@Html.EditorFor(model => model.LeaveDate)*@
-                @Html.TextBox("StartDate", "", new { @class = "form-control datefield" })
-                @*@Html.ValidationMessageFor(model => model.LeaveDate)*@
+                @*@Html.TextBox("StartDate", "", new { @class = "form-control datefield" })*@
+                @Html.TextBoxFor(model => model.Criteria.StartDate, "{0:MM/dd/yyyy}", new { @class = "form-control datefield" })
+                @Html.ValidationMessageFor(model => model.Criteria.StartDate)
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.EndDate, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Criteria.EndDate, new { @class = "control-label col-md-2" })
             @*@Html.Label("End Date:", new { @class = "control-label col-md-2" })*@
             <div class="col-md-10">
                 @*@Html.EditorFor(model => model.LeaveDate)*@
-                @Html.TextBox("EndDate", "", new { @class = "form-control datefield" })
-                @*@Html.ValidationMessageFor(model => model.LeaveDate)*@
+                @*@Html.TextBox("EndDate", "", new { @class = "form-control datefield" })*@
+                @Html.TextBoxFor(model => model.Criteria.EndDate, "{0:MM/dd/yyyy}", new { @class = "form-control datefield" })
+                @Html.ValidationMessageFor(model => model.Criteria.EndDate)
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.LTypeID, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Criteria.LTypeID, new { @class = "control-label col-md-2" })
             @*@Html.Label("Leave Type:", new { @class = "control-label col-md-2" })*@
             <div class="col-md-10">
                 @*@Html.EditorFor(model => model.LTypeID)*@
-                @Html.DropDownList("LTypeID", (SelectList)ViewBag.LTypes, "-- All --")
-                @*@Html.ValidationMessageFor(model => model.LTypeID)*@
+                @Html.DropDownListFor(model => model.Criteria.LTypeID, (SelectList)ViewBag.LTypes, "-- All --")
+                @*@Html.ValidationMessageFor(model => model.Criteria.LTypeID)*@
             </div>
         </div>
 
@@ -51,24 +52,20 @@
                 <input type="submit" value="Generate" class="btn btn-default" />
             </div>
         </div>
-
-        
-        
     </div>
-
 
     if (Model.ReportResults != null && Model.ReportResults.Count() > 0)
     {
         <div class="form-group">
             <p>
-                @Html.ActionLink("Get Chart", "GetChart", Model, new { target = "_blank" })
+                @Html.ActionLink("Get Chart", "GetChart", Model.Criteria, new { target = "_blank" })
             </p>
         </div>
     
         <table class="table">
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.EmpName)
+                    @Html.DisplayNameFor(model => model.EmployeeName)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.LTypName)
@@ -85,7 +82,7 @@
                 { 
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.EmpName)
+                            @Html.DisplayFor(modelItem => item.EmployeeName)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.LTypName)
@@ -96,7 +93,6 @@
                     </tr>
                 }
             }
-
         </table>
     }
 }
