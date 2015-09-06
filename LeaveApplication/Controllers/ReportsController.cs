@@ -24,96 +24,72 @@ namespace LeaveApplication.Controllers
 
         public ActionResult Report()
         {
-            LoadDdlLTypes();
-
             Report report = new Report();
 
-            report.StartDate = DateTime.Now;
-            report.EndDate = DateTime.Now;
+            LoadDdlLTypes();
 
-            string LTypeName = "%";
-
-            var data = db.Database.SqlQuery<ReportResult>("SpGenReport @startdate, @enddate, @typename, @email",
-                                                new SqlParameter("@startdate", report.StartDate),
-                                                new SqlParameter("@enddate", report.EndDate),
-                                                new SqlParameter("@typename", LTypeName),
-                                                new SqlParameter("@email", "%"));
-
-            report.ReportResults = data.ToArray();
-
-            return View(report);            
+            return View(report);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Report(Report report)
         {
-            string LTypeName = "%";
-
-            if (report.LTypeID >= 1)
+            if (ModelState.IsValid)
             {
-                LTypeName = db.LTypes
-                                    .Where(x => x.ID == report.LTypeID)
-                                    .Select(y => y.Name).First();
+                LoadDdlLTypes(Convert.ToInt32(report.Criteria.LTypeID));
+
+                string LTypeName = "%";
+
+                if (report.Criteria.LTypeID >= 1)
+                {
+                    LTypeName = db.LTypes
+                                        .Where(x => x.ID == report.Criteria.LTypeID)
+                                        .Select(y => y.Name).First();
+                }
+
+                var data = db.Database.SqlQuery<ReportResult>("SpGenReport @startdate, @enddate, @typename, @email",
+                                                    new SqlParameter("@startdate", report.Criteria.StartDate),
+                                                    new SqlParameter("@enddate", report.Criteria.EndDate.AddDays(1)),
+                                                    new SqlParameter("@typename", LTypeName),
+                                                    new SqlParameter("@email", "%"))
+                                                    .OrderBy(a => a.LTypName)
+                                                    .ThenByDescending(b => b.NoOfDays)
+                                                    .ThenBy(c => c.EmployeeName);
+                
+                report.ReportResults = data.ToArray();
             }
 
-            LoadDdlLTypes(Convert.ToInt32(report.LTypeID));
-            
-            var data = db.Database.SqlQuery<ReportResult>("SpGenReport @startdate, @enddate, @typename, @email",
-                                                new SqlParameter("@startdate", report.StartDate),
-                                                new SqlParameter("@enddate", report.EndDate.AddDays(1)),
-                                                new SqlParameter("@typename", LTypeName),
-                                                new SqlParameter("@email", "%"));
-
-            report.ReportResults = data.ToArray();
-            
             return View(report);
-
-
-            //Chart chart = new Chart();
-            //chart.Titles.Add("Leave System");
-            //chart.ChartAreas.Add(new ChartArea());
-            //chart.ChartAreas[0].Position.Height = 100;
-            //chart.ChartAreas[0].Position.Width = 100;
-            //chart.ChartAreas[0].AxisX.Interval = 1;
-            
-            //chart.Series.Add(new Series("WFH"));
-            //chart.Series["WFH"].ChartType = SeriesChartType.Column;
-            //chart.Series["WFH"].Points.DataBindXY(
-            //    data.Where(data1 => data1.Name == "Work from home").Select(data1 => data1.EmpName.ToString()).ToArray(),
-            //    data.Where(data1 => data1.Name == "Work from home").Select(data1 => data1.NoOfDays).ToArray());
-            //chart.Series["WFH"].Label = "#VALY";
-            //chart.Legends.Add(new Legend("WFH"));
-            //chart.Series["WFH"].Legend = "WFH";
-            //chart.Series["WFH"].IsVisibleInLegend = true;
-                        
-            //MemoryStream ms = new MemoryStream();
-            //chart.SaveImage(ms, ChartImageFormat.Png);
-            //return File(ms.ToArray(), "image/png");
         }
 
-        public FileResult GetChart(Report report)
+        public FileResult GetChart(ReportCriteria criteria)
         {
+            Report report = new Report();
+            report.Criteria = criteria;
+
             string LTypeName = "%";
 
-            if (report.LTypeID >= 1)
+            if (report.Criteria.LTypeID >= 1)
             {
                 LTypeName = db.LTypes
-                                    .Where(x => x.ID == report.LTypeID)
+                                    .Where(x => x.ID == report.Criteria.LTypeID)
                                     .Select(y => y.Name).First();
             }
 
-            LoadDdlLTypes(Convert.ToInt32(report.LTypeID));
+            LoadDdlLTypes(Convert.ToInt32(report.Criteria.LTypeID));
 
             var data = db.Database.SqlQuery<ReportResult>("SpGenReport @startdate, @enddate, @typename, @email",
-                                                new SqlParameter("@startdate", report.StartDate),
-                                                new SqlParameter("@enddate", report.EndDate),
+                                                new SqlParameter("@startdate", report.Criteria.StartDate),
+                                                new SqlParameter("@enddate", report.Criteria.EndDate),
                                                 new SqlParameter("@typename", LTypeName),
-                                                new SqlParameter("@email", "%"));
+                                                new SqlParameter("@email", "%"))
+                                                .OrderBy(a => a.EmployeeName)
+                                                .ThenBy(b => b.LTypName);
 
             report.ReportResults = data.ToArray();
 
-            List<string> EmpNames = new List<string>();
+            List<string> EmployeeNames = new List<string>();
             List<int> LvWFHCounts = new List<int>();
             List<int> LvALCounts = new List<int>();
             List<int> LvELCounts = new List<int>();
@@ -127,9 +103,9 @@ namespace LeaveApplication.Controllers
             
             foreach (var item in report.ReportResults)
             {
-                if (!EmpNames.Contains(item.EmpName))
+                if (!EmployeeNames.Contains(item.EmployeeName))
                 {
-                    EmpNames.Add(item.EmpName);
+                    EmployeeNames.Add(item.EmployeeName);
                 }
 
                 switch (item.LTypName)
@@ -181,7 +157,7 @@ namespace LeaveApplication.Controllers
                     </Chart>";
 
             var chart = new System.Web.Helpers.Chart(width: 1500, height: 800, theme: themeChart)
-                .AddTitle("Leave Data from " + report.StartDate.ToString("yyyy/MM/dd") + " till " + report.EndDate.ToString("yyyy/MM/dd"))
+                .AddTitle("Leave Data from " + report.Criteria.StartDate.ToString("yyyy/MM/dd") + " till " + report.Criteria.EndDate.ToString("yyyy/MM/dd"))
                 .AddLegend("Legend")
                 .SetYAxis("Number of days")
                 .SetXAxis("Employees");
@@ -189,70 +165,70 @@ namespace LeaveApplication.Controllers
             if (LvWFHCounts.Sum() > 0)
             {
                 chart.AddSeries(name: "Work from home",
-                            xValue: EmpNames,
+                            xValue: EmployeeNames,
                             yValues: LvWFHCounts);
             }
 
             if (LvALCounts.Sum() > 0)
             {
                 chart.AddSeries(name: "Annual Leave",
-                            xValue: EmpNames,
+                            xValue: EmployeeNames,
                             yValues: LvALCounts);
             }
 
             if (LvELCounts.Sum() > 0)
             {
                 chart.AddSeries(name: "Emergency Leave",
-                            xValue: EmpNames,
+                            xValue: EmployeeNames,
                             yValues: LvELCounts);
             }
 
             if (LvSLCounts.Sum() > 0)
             {
                 chart.AddSeries(name: "Sick Leave",
-                            xValue: EmpNames,
+                            xValue: EmployeeNames,
                             yValues: LvSLCounts);
             }
 
             if (LvCTCounts.Sum() > 0)
             {
                 chart.AddSeries(name: "Comp Time Off",
-                            xValue: EmpNames,
+                            xValue: EmployeeNames,
                             yValues: LvCTCounts);
             }
 
             if (LvMLCounts.Sum() > 0)
             {
                 chart.AddSeries(name: "Marriage Leave",
-                            xValue: EmpNames,
+                            xValue: EmployeeNames,
                             yValues: LvMLCounts);
             }
 
             if (LvPLCounts.Sum() > 0)
             {
                 chart.AddSeries(name: "Paternity Leave",
-                            xValue: EmpNames,
+                            xValue: EmployeeNames,
                             yValues: LvPLCounts);
             }
 
             if (LvCLCounts.Sum() > 0)
             {
                 chart.AddSeries(name: "Compassionate Leave",
-                            xValue: EmpNames,
+                            xValue: EmployeeNames,
                             yValues: LvCLCounts);
             }
 
             if (LvOOOCounts.Sum() > 0)
             {
                 chart.AddSeries(name: "Out of Office",
-                            xValue: EmpNames,
+                            xValue: EmployeeNames,
                             yValues: LvOOOCounts);
             }
 
             if (LvHLCounts.Sum() > 0)
             {
                 chart.AddSeries(name: "Hospitalization Leave",
-                            xValue: EmpNames,
+                            xValue: EmployeeNames,
                             yValues: LvHLCounts);
             }
 

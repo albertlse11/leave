@@ -19,7 +19,10 @@ namespace LeaveApplication.Controllers
         // GET: /Leaves/
         public ActionResult Index()
         {
-            //return View(db.Leaves.ToList());
+            LeaveSearch search = new LeaveSearch();
+
+            LoadDdlLTypes();
+            LoadDdlAllEmployees();
 
             var query = from lvs in db.Leaves
                         join emp in db.Employees on lvs.EmployeeID equals emp.ID
@@ -27,7 +30,7 @@ namespace LeaveApplication.Controllers
                         join rsn in db.Reasons on lvs.ReasonID equals rsn.ID
                         where lvs.Deleted == false
                         orderby lvs.LeaveDate descending
-                        select new LeaveList() 
+                        select new LeaveResult() 
                         { 
                             ID = lvs.ID, 
                             LeaveDate = lvs.LeaveDate, 
@@ -36,7 +39,45 @@ namespace LeaveApplication.Controllers
                             ReasonDesc = rsn.Desc 
                         };
 
-            return View(query.ToList());
+            search.LeaveResults = query.ToArray();
+
+            return View(search);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(LeaveSearch search)
+        {
+            if (ModelState.IsValid)
+            {
+                LoadDdlLTypes(Convert.ToInt32(search.Criteria.LTypeID));
+                LoadDdlAllEmployees(Convert.ToInt32(search.Criteria.EmployeeID));
+
+                DateTime EndDate = search.Criteria.EndDate.AddDays(1);
+
+                var query = from lvs in db.Leaves
+                            join emp in db.Employees on lvs.EmployeeID equals emp.ID
+                            join typ in db.LTypes on lvs.LTypeID equals typ.ID
+                            join rsn in db.Reasons on lvs.ReasonID equals rsn.ID
+                            where lvs.Deleted == false
+                            && lvs.LeaveDate >= search.Criteria.StartDate
+                            && lvs.LeaveDate < EndDate
+                            && (search.Criteria.LTypeID >= 1 ? lvs.LTypeID == search.Criteria.LTypeID : 1 == 1)
+                            && (search.Criteria.EmployeeID >= 1 ? lvs.EmployeeID == search.Criteria.EmployeeID : 1 == 1)
+                            orderby lvs.LeaveDate descending
+                            select new LeaveResult()
+                            {
+                                ID = lvs.ID,
+                                LeaveDate = lvs.LeaveDate,
+                                EmployeeName = emp.LastName + ", " + emp.FirstName,
+                                LTypeName = typ.Name,
+                                ReasonDesc = rsn.Desc
+                            };
+
+                search.LeaveResults = query.ToArray();
+            }
+            
+            return View(search);
         }
 
         [Authorize(Roles = "Admin,CanEdit")]
