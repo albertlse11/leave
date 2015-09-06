@@ -8,17 +8,10 @@ namespace LeaveApplication.Models
 {
     public class Report
     {
-        [Display(Name = "Start Date")]
-        public DateTime StartDate { get; set; }
-
-        [Display(Name = "End Date")]
-        public DateTime EndDate { get; set; }
-
-        [Display(Name = "Leave Type")]
-        public int? LTypeID { get; set; }
+        public ReportCriteria Criteria { get; set; }
 
         [Display(Name = "Employee Name")]
-        public string EmpName { get; set; }
+        public string EmployeeName { get; set; }
 
         [Display(Name = "Leave Type")]
         public string LTypName { get; set; }

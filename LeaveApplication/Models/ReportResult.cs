@@ -9,7 +9,7 @@ namespace LeaveApplication.Models
     public class ReportResult
     {
         [Display(Name = "Employee Name")]
-        public string EmpName { get; set; }
+        public string EmployeeName { get; set; }
 
         [Display(Name = "Leave Type")]
         public string LTypName { get; set; }
