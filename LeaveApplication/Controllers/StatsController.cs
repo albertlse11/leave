@@ -15,9 +15,10 @@ namespace LeaveApplication.Controllers
         // GET: Stats
         public string Index()
         {
-            int total = db.Leaves.Count();
+            int LeaveTotal = db.Leaves.Count();
+            int ReasonTotal = db.Reasons.Count();
 
-            string result = String.Format("Total of {0} records since September 2012. ", total);
+            string result = String.Format("Total of {0} Leave(s) and {1} Reason(s) recorded since September 2012. ", LeaveTotal, ReasonTotal);
 
             var data = db.Database.SqlQuery<ReportResult>("SpStats");
 
